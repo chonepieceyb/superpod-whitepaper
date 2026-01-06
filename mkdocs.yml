@@ -67,14 +67,15 @@ plugins:
 markdown_extensions:
   - admonition
   - pymdownx.details
+  - pymdownx.blocks.caption
   - pymdownx.superfences:
       custom_fences:
         - name: mermaid
           class: mermaid
           format: !!python/name:pymdownx.superfences.fence_code_format
         - name: vegalite
-          class: language-vegalite
-          format: !!python/name:pymdownx.superfences.fence_code_format
+          class: vegalite
+          format: !!python/name:mkdocs_charts_plugin.fences.fence_vegalite
         - name: plotly
           class: mkdocs-plotly
           format: !!python/name:mkdocs_plotly_plugin.fences.fence_plotly
