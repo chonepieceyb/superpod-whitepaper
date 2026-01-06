@@ -203,9 +203,11 @@
     <div class="container">
       <h2>参与单位</h2>
       <div class="partners-single">
-        <div class="partner-card main">
-          <div class="partner-name">上海人工智能实验室</div>
+        {% for partner in config.extra.partners %}
+        <div class="partner-card {% if loop.first %}main{% endif %}">
+          <div class="partner-name">{{ partner.name }}</div>
         </div>
+        {% endfor %}
       </div>
     </div>
   </section>

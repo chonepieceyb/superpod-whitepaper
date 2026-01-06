@@ -1,5 +1,5 @@
-site_name: SuperPod 技术白皮书
-site_description: 面向大模型的 AI 超算互联架构技术白皮书
+site_name: 超节点技术白皮书
+site_description: 面向下一代模型的 AI 超节点技术白皮书
 site_url: https://deeplink.org/superpod-whitepaper/
 docs_dir: src
 
@@ -41,6 +41,29 @@ theme:
   icon:
     repo: fontawesome/brands/github
 
+plugins:
+  - search:
+      lang:
+        - zh
+        - en
+      separator: '[\s\-\.]+'
+  - encryptcontent:
+      global_password: 'superpod2026'
+      reload_scripts:
+        - javascripts/charts.js
+      # title_prefix: '🔒'
+  #     summary: '此页面内容已加密，请输入密码查看。'
+  #     placeholder: '请输入密码'
+  #     decryption_failure_message: '密码错误，请重试。'
+  #     encryption_info_message: '请联系管理员获取访问密码。'
+  #     password_button: true
+  #     password_button_text: '解锁'
+  #     remember_password: true
+  #     session_storage: true
+  #     webcrypto: true
+  #     selfhost: true
+  #     selfhost_download: true
+
 markdown_extensions:
   - admonition
   - pymdownx.details
@@ -49,6 +72,12 @@ markdown_extensions:
         - name: mermaid
           class: mermaid
           format: !!python/name:pymdownx.superfences.fence_code_format
+        - name: vegalite
+          class: language-vegalite
+          format: !!python/name:pymdownx.superfences.fence_code_format
+        - name: plotly
+          class: mkdocs-plotly
+          format: !!python/name:mkdocs_plotly_plugin.fences.fence_plotly
   - pymdownx.highlight:
       anchor_linenums: true
       line_spans: __span
@@ -67,27 +96,6 @@ markdown_extensions:
   - toc:
       permalink: true
       toc_depth: 3
-
-plugins:
-  - search:
-      lang:
-        - zh
-        - en
-      separator: '[\s\-\.]+'
-  - encryptcontent:
-      global_password: 'superpod2026'
-      title_prefix: '🔒'
-      summary: '此页面内容已加密，请输入密码查看。'
-      placeholder: '请输入密码'
-      decryption_failure_message: '密码错误，请重试。'
-      encryption_info_message: '请联系管理员获取访问密码。'
-      password_button: true
-      password_button_text: '解锁'
-      remember_password: true
-      session_storage: true
-      webcrypto: true
-      selfhost: true
-      selfhost_download: true
 
 nav:
   - 首页: index.md
@@ -129,6 +137,10 @@ nav:
   - 附录: 07-appendix.md
 
 extra:
+  partners:
+    - name: 上海人工智能实验室
+    - name: 中国联通
+    - name: 阶跃星辰
   generator: false
   social:
     - icon: fontawesome/brands/github
@@ -141,6 +153,10 @@ extra_css:
 extra_javascript:
   - javascripts/mathjax.js
   - https://unpkg.com/mathjax@3/es5/tex-mml-chtml.js
+  - https://cdn.jsdelivr.net/npm/vega@5
+  - https://cdn.jsdelivr.net/npm/vega-lite@5
+  - https://cdn.jsdelivr.net/npm/vega-embed@6
+  - javascripts/charts.js
 
 copyright: © 2025 DeepLink 团队. 保留所有权利.
 
