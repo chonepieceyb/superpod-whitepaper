@@ -112,6 +112,7 @@ nav:
       - 整机工程: 01-architecture/server-architecture.md
   - 软件系统:
     - 02-software/index.md
+    - 章节大纲: 02-software/0.outline.md
     - 内存语义: 02-software/memory-semantics.md
     - 通信库: 02-software/comm-lib.md
     - RAS 可靠性: 02-software/ras.md
