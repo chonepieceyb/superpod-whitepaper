@@ -2,7 +2,10 @@
 
 Dragonfly 拓扑旨在实现高可扩展性和低网络争用。它结合了fat-tree和butterfly拓扑，使用交换机和链路的分层结构来互连 GPU。结构：Dragonfly拓扑由连接到本地交换机的GPU 组组成，这些GPU 又通过高带宽链路连接到其他交换机。这些组以最小化拥塞和最大化吞吐量的方式互连。Dragonfly 拓扑在可扩展性、性能和成本效率之间实现了平衡。它通常用于超级计算系统和大型集群，在大型系统中的 GPU 之间提供快速、直接的通信。但是，某些工作负载可能难以实施和优化，并且如果管理不当，层次结构可能会引入瓶颈。
 
-<!-- TODO: 添加 Dragonfly 拓扑示意图 -->
+![Dragonfly 拓扑示意图](dragonfly-ocs/imgs/image1.png)
+/// caption
+图 1: Dragonfly 拓扑结构示意图
+///
 
 ## 光路交换 OCS
 
