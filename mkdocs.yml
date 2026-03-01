@@ -115,18 +115,18 @@ nav:
   - 软件系统:
     - 02-software/index.md
     - 章节大纲: 02-software/0.outline.md
-    - 内存语义: 02-software/memory-semantics.md
-    - 通信库: 02-software/comm-lib.md
-    - RAS 可靠性: 02-software/ras.md
-    - 训练与推理: 02-software/train-infer.md
+    - 统一寻址与内存语义: 02-software/memory-semantics.md
+    - 通信运行时与编程模型: 02-software/comm-lib.md
+    - 可观测性与 RAS 体系: 02-software/ras.md
+    - 训练与推理系统工程: 02-software/train-infer.md
   - 建模仿真:
     - 03-simulation/index.md
     - 章节大纲: 03-simulation/0.outline.md
-    - 仿真建模概述: 03-simulation/1.overview.md
-    - 负载建模: 03-simulation/2.workload_modeling.md
-    - 系统仿真: 03-simulation/3.system_simulation.md
-    - 仿真平台: 03-simulation/platform.md
-    - 软硬协同演进: 03-simulation/coevolution.md
+    - 方法论概述与适用边界: 03-simulation/index.md#methodology
+    - 负载建模（需求规约）: 03-simulation/2.workload_modeling.md
+    - 系统层仿真（映射与编排）: 03-simulation/3.system_simulation.md
+    - 平台与性能资产库: 03-simulation/platform.md
+    - 软硬协同演进与闭环: 03-simulation/coevolution.md
   - 参考设计:
     - 04-reference-designs/index.md
     - 标准构型：以太全对等互联: 04-reference-designs/standard-ether.md
@@ -136,9 +136,19 @@ nav:
     - 探索构型：大环路与分布式dOCS互联: 04-reference-designs/ring-docs.md
   - 未来演进:
     - 05-future/index.md
-    - 光互联: 05-future/interconnect.md
-    - 先进封装: 05-future/packaging.md
-    - 模型技术: 05-future/model-tech.md
+    - 互联技术演进:
+      - 光互联与交换: 05-future/interconnect.md#optical-interconnect
+      - 先进互联拓扑演进: 05-future/topology.md
+      - Scale-Up 总线与互联语义: 05-future/bus.md#bus-evolution
+    - 先进封装技术演进:
+      - 光电互连封装（LPO/NPO/CPO）: 05-future/packaging.md#lpo-cpo-npo
+      - Chiplet 多Die 集成（2.5D/3D）: 05-future/chiplet.md#multi-die-stacking
+      - 堆叠内存技术（HBM/3D DRAM）: 05-future/packaging.md#3d-dram
+    - 先进模型技术演进:
+      - 低精度数值格式: 05-future/model-tech.md#low-precision
+      - 超长序列技术: 05-future/model-tech.md#long-context
+      - 超稀疏模型技术: 05-future/model-tech.md#ultra-sparse
+      - 多模态融合技术: 05-future/model-tech.md#multimodal
   - 总结: 06-conclusion.md
   - 附录: 07-appendix.md
   - 如何贡献: contributing.md
