@@ -116,6 +116,7 @@ nav:
     - 02-software/index.md
     - 章节大纲: 02-software/0.outline.md
     - 统一寻址与内存语义: 02-software/memory-semantics.md
+    - 内存池化: 02-software/memory-pooling.md
     - 通信运行时与编程模型: 02-software/comm-lib.md
     - 可观测性与 RAS 体系: 02-software/ras.md
     - 训练与推理系统工程: 02-software/train-infer.md
@@ -137,18 +138,19 @@ nav:
   - 未来演进:
     - 05-future/index.md
     - 互联技术演进:
-      - 光互联与交换: 05-future/interconnect.md#optical-interconnect
+      - 光互联与交换: 05-future/interconnect.md
       - 先进互联拓扑演进: 05-future/topology.md
-      - Scale-Up 总线与互联语义: 05-future/bus.md#bus-evolution
+      - Scale-Up 总线与互联语义: 05-future/bus.md
     - 先进封装技术演进:
-      - 光电互连封装（LPO/NPO/CPO）: 05-future/packaging.md#lpo-cpo-npo
-      - Chiplet 多Die 集成（2.5D/3D）: 05-future/chiplet.md#multi-die-stacking
-      - 堆叠内存技术（HBM/3D DRAM）: 05-future/packaging.md#3d-dram
+      - 光电互连封装（LPO/NPO/CPO）: 05-future/packaging.md
+      - Chiplet 多Die 集成（2.5D/3D）: 05-future/chiplet.md
+      - 堆叠内存技术（HBM/3D DRAM）: 05-future/hbm.md
     - 先进模型技术演进:
-      - 低精度数值格式: 05-future/model-tech.md#low-precision
-      - 超长序列技术: 05-future/model-tech.md#long-context
-      - 超稀疏模型技术: 05-future/model-tech.md#ultra-sparse
-      - 多模态融合技术: 05-future/model-tech.md#multimodal
+      - 05-future/model-tech.md
+      - 低精度数值格式: 05-future/low-precision.md
+      - 超长序列技术: 05-future/long-context.md
+      - 超稀疏模型技术: 05-future/ultra-sparse.md
+      - 多模态融合技术: 05-future/multimodal.md
   - 总结: 06-conclusion.md
   - 附录: 07-appendix.md
   - 如何贡献: contributing.md

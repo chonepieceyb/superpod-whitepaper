@@ -75,6 +75,40 @@ NVSwitch 负责在单机或机柜域内构建 GPU 全互连（all-to-all / non-b
 4. "最大 NVLink 域"指官方在对应代际提及的最大可支持互联规模；Blackwell 576 带 * 为推测。
 </small>
 
+## 国产 GPU Scale-Up 物理层实现
+
+国产 GPU 的 Scale-Up 互联物理层实现可分为三个技术阶段：PCIe 直连/Switch、SerDes 点对点直连、以及通过专用交换芯片构建的大规模互联。
+
+### PCIe 互联
+
+PCIe 是最早也是最基础的 GPU 互联方式。多数国产 GPU 在基础配置中采用 PCIe 5.0 x16（单向 63 GB/s）作为底线互联，同时叠加自研桥接技术提升卡间带宽：
+
+| 厂商 | 产品 | PCIe 版本 | 自研互联 | 卡间带宽 | 最大单节点卡数 |
+|:-----|:-----|:----------|:---------|:---------|:---------------|
+| 摩尔线程 | MTT S4000 | PCIe 5.0 x16 | MTLink 桥接 | PCIe: 63 GB/s; MTLink: 240 GB/s | 8 卡 |
+| 壁仞科技 | BR100 系列 | PCIe 5.0 x16 (支持 CXL) | BLink™ + 桥片 | PCIe: 63 GB/s; BLink: 448 GB/s | 8 卡 |
+| 海光 | DCU K100 | PCIe 5.0 x16 | xGMI 协议 | PCIe: 63 GB/s; xGMI: 184 GB/s | 8 卡 |
+| 寒武纪 | MLU370-X8 | PCIe 4.0 x16 | MLU-Link 桥接卡 | PCIe: 31.5 GB/s; MLU-Link: 200 GB/s | 8 卡 |
+| 沐曦科技 | 曦思 C600 | PCIe 5.0 x16 | MetaXLink | PCIe: 63 GB/s; MetaXLink: >1 TB/s | 8 卡 |
+| 华为昇腾 | Atlas 300T A2 | PCIe 4.0 x16 | HCCS | PCIe: 31.5 GB/s; HCCS: 2 TB/s | 8 卡 |
+
+### SerDes 点对点互联
+
+SerDes 直连是第二代 GPU 互联方式，一般采用 PAM4 56G 或 112G，无需交换芯片，性能由 SerDes 带宽和数量决定。其局限在于一经设计完成便无法扩展，通常仅实现单机 8 卡环境：
+
+| 厂商/产品 | SerDes 规格 | 互联规模 | 核心带宽/延迟 | 拓扑 | 封装 | 功耗 |
+|:----------|:-----------|:---------|:-------------|:-----|:-----|:-----|
+| 寒武纪 思元 290 (MLU-Link V1) | 56G PAM4 | 8 卡全互联 | 总带宽 600 GB/s; <100 ns | Mesh 全互联 | 2.5D+CoWoS | 300W |
+| 寒武纪 思元 370 (MLU-Link V2) | 112G PAM4 | 4–8 卡全互联 | 双向 200 GB/s; <80 ns | Mesh + 星型 | Chiplet 四芯粒 | 280W |
+| 壁仞 BR100 (BLink) | 112G PAM4 | 8 卡 OAM 全互联 | D2D: 896 GB/s (<1 ns); 8 卡: 512 GB/s | Mesh + 3D Mesh | 2.5D + 硅中介层 | 350W |
+| 华为昇腾 910B (CloudMatrix) | 112G→224G PAM4 | 16 卡–千卡级 | 卡间 400 GB/s+; 百 ns 级 | Mesh + Torus + 3D Mesh | CoWoS | 310W |
+| 燧原 L600 (GC-Link) | 112G PAM4 | 8 卡环形 Mesh | 384 GB/s; <150 ns | 8 卡环形 Mesh | 2.5D | 280W |
+| 沐曦 MX1 (MX-Link) | 112G PAM4 | 8 卡混合拓扑 | 448 GB/s; <120 ns | Mesh + 星型 | 2.5D+CoWoS | 320W |
+
+### 交换芯片互联
+
+当 Scale-Up 域需要超过 8 卡时，交换芯片成为必要组件。目前 NVIDIA NVSwitch 在此领域处于绝对领先地位（详见[互联协议](protocols.md)章节）。国产阵营中，华为的 UB Switch、以及基于以太网交换 ASIC（如盛科 25.6T 芯片）的方案正在快速推进。
+
 ## 封装形态与插损匹配
 
 *   CoWoS / InFO / Foveros 等封装缩短信道、降低插损，便于更高速率的 D2D/C2C；大机箱背板/线缆仍受插损与热约束。
