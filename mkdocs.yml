@@ -96,17 +96,17 @@ nav:
   - 执行摘要: 00-executive-summary.md
   - 编写委员会: 00-editorial-board.md
   - 架构分析:
-    - 本章导读: 01-architecture/index.md
+    - 架构分析: 01-architecture/00-index.md
     - 产品实践:
-      - NVIDIA 超节点: 01-architecture/nvidia.md
-      - 华为超节点: 01-architecture/huawei.md
+      - NVIDIA 超节点: 01-architecture/01-nvidia.md
+      - 华为超节点: 01-architecture/02-huawei.md
     - 技术基础:
-      - 电气接口（物理层）: 01-architecture/electrical.md
-      - 互联协议（链路/事务层）: 01-architecture/protocols.md
-      - 互联拓扑（网络层）: 01-architecture/topology.md
+      - 电气接口与物理层: 01-architecture/03-electrical.md
+      - 互联协议与内存语义: 01-architecture/04-protocols.md
+      - 互联拓扑与扩展权衡: 01-architecture/05-topology.md
     - 系统实现:
-      - 系统访存与整机资源架构: 01-architecture/system-architecture.md
-      - 整机工程: 01-architecture/server-architecture.md
+      - 统一访存与系统架构: 01-architecture/06-system-architecture.md
+      - 整机工程与交付形态: 01-architecture/07-server-architecture.md
   - 软件系统:
     - 本章导读: 02-software/index.md
     - 统一内存子系统:
@@ -153,6 +153,7 @@ nav:
     - 产业生态地图: 08-ecosystem-map.md
   - 结语与附录:
     - 总结: 06-conclusion.md
+    - 证据等级与判断口径: 07-evidence-grading.md
     - 附录: 07-appendix.md
   - 版本历史: 00-version-history.md
   - 参与方式:
