@@ -128,8 +128,8 @@ nav:
     - 方法论落地：异构推理架构的帕累托分析: 03-simulation/case-inference.md
   - 参考设计:
     - 本章导读: 04-reference-designs/index.md
-    - 标准构型：以太全对等互联方案: 04-reference-designs/standard-ether.md
     - 标准构型：总线全对等互联方案: 04-reference-designs/standard-bus.md
+    - 标准构型：以太全对等互联方案: 04-reference-designs/standard-ether.md
     - 探索构型：Dragonfly + OCS 方案: 04-reference-designs/dragonfly-ocs.md
     - 探索构型：3D Torus + OCS 方案: 04-reference-designs/torus-ocs.md
     - 探索构型：大环路 + 分布式 dOCS 方案: 04-reference-designs/ring-docs.md
