@@ -34,6 +34,7 @@ theme:
     - navigation.tracking
     - navigation.top
     - navigation.expand
+    - toc.integrate
     - search.highlight
     - search.share
     - content.action.edit
@@ -89,14 +90,15 @@ markdown_extensions:
   - footnotes
   - toc:
       permalink: true
-      toc_depth: 3
+      toc_depth: 2-3
 
 nav:
   - 首页: index.md
-  - 执行摘要: 00-executive-summary.md
-  - 编写委员会: 00-editorial-board.md
+  - 前言: 
+    - 00-preface.md
+    - 编写委员会: 00-editorial-board.md
   - 架构分析:
-    - 架构分析: 01-architecture/00-index.md
+    - 01-architecture/index.md
     - 产品实践:
       - NVIDIA 超节点: 01-architecture/01-nvidia.md
       - 华为超节点: 01-architecture/02-huawei.md
@@ -118,12 +120,12 @@ nav:
       - 可观测性与 RAS 体系: 02-software/ras.md
       - 训练与推理系统工程: 02-software/train-infer.md
   - 建模仿真:
-    - 本章导读: 03-simulation/index.md
-    - 方法论概述与适用边界: 03-simulation/index.md#methodology
+    - 03-simulation/index.md
     - 负载模型：定义需求侧的压力画像: 03-simulation/2.workload_modeling.md
     - 系统模型：映射与编排的推演引擎: 03-simulation/3.system_simulation.md
     - 资源模型：供给侧能力边界的参数化表达: 03-simulation/platform.md
-    - 校准验证、输出接口与共演进闭环: 03-simulation/coevolution.md
+    - 校准验证与共演进闭环: 03-simulation/coevolution.md
+    - 方法论落地：异构推理架构的帕累托分析: 03-simulation/case-inference.md
   - 参考设计:
     - 本章导读: 04-reference-designs/index.md
     - 标准构型：以太全对等互联方案: 04-reference-designs/standard-ether.md
@@ -223,6 +225,7 @@ extra_javascript:
   - https://cdn.jsdelivr.net/npm/vega-lite@5
   - https://cdn.jsdelivr.net/npm/vega-embed@6
   - javascripts/charts.js
+  - javascripts/evidence-tags.js
 
 copyright: © 2025 DeepLink 团队. 保留所有权利.
 
