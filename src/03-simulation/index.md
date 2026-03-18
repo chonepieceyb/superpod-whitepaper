@@ -4,7 +4,15 @@
 
 如果这个问题没有建立统一方法，后续关于互联、软件栈、参考设计和未来演进的判断，最终都容易退回到规格表比较、单项 benchmark 对照，或者经验驱动的局部结论。建模仿真的意义，正是在于把这些离散、局部、易失真的观察组织成一张能够支撑方案判断的边界地图；它要做的不是替代工程判断，而是**把争论转化为可验证的假设，把经验转化为可校准的资产。**
 
-公开研究和工程实践已经为这一问题提供了重要基础。训练侧有 `ASTRA-sim` 一类端到端分布式训练仿真框架，并通过 `Chakra` 这样的执行跟踪规约，将负载描述、并行策略与网络/内存后端解耦[^astra-sim-1][^astra-sim-2][^chakra]；自动并行领域有 `Alpa` 等系统，用成本模型在巨大配置空间中搜索给定目标下的更优策略[^alpa]；推理侧则有 `Orca`、`Sarathi-Serve` 等 serving 系统，把持续批处理、预填充/解码调度以及吞吐-时延权衡纳入统一优化框架[^orca][^sarathi]。这些工作说明，大模型基础设施的建模与推演已经形成了扎实的方法和工具基础。
+公开研究和工程实践已经为这一问题提供了重要基础，且这些基础并非零散积累，而是在训练仿真、负载规约、策略搜索和推理调度等方向上各自形成了较为成熟的工具链。
+
+**训练侧仿真与负载规约。** `ASTRA-sim` 是目前最成体系的分布式训练仿真框架，其核心能力是将计算后端、通信后端和显存后端解耦，支持分层网络建模——这一结构天然适配超节点中 Scale-Up 与 Scale-Out 的分层互联[^astra-sim-1][^astra-sim-2]。2.0 版本进一步通过 `Chakra` 执行跟踪规约对接标准化的负载描述，使同一份负载可以在不同拓扑、不同并行策略之间复用，而不必为每种配置单独准备 trace[^chakra]。`Chakra` 本身的价值不在仿真，而在于定义了一种硬件无关、策略中立的负载表示格式，这与后文负载建模中"不预先固化某种技术路线"的设计原则高度一致。
+
+**自动并行与策略搜索。** `Alpa` 等系统用成本模型在巨大配置空间中搜索给定目标下的更优并行策略[^alpa]。其成本模型本质上是一种快速的系统级性能估算器，能在数秒内评估一个候选配置的计算量、通信量和显存占用——这正是后文资源模型三级保真度中 L1 解析层所需要的能力。
+
+**推理侧建模与调度。** 推理场景的建模工具近两年进展最为密集。`Orca` 将持续批处理引入生成式推理[^orca]，`Sarathi-Serve` 把预填充/解码调度与吞吐-时延权衡纳入统一优化框架[^sarathi]，`Vidur` 面向推理集群做性能预测和配置搜索[^vidur]，`Splitwise` 和 `DistServe` 则进一步把 Prefill/Decode 分离的系统级建模推到了可部署的工程成熟度[^splitwise][^distserve]。这些工作已经覆盖了推理侧从到达建模、阶段拆分到调度优化的主要环节。
+
+这些工具说明，大模型基础设施的建模与推演已经形成了扎实的方法和工具基础。
 
 但超节点决策的难点并不只是“把某一个点算得更准”，也不只是“在既定目标函数下找到一个更优点”。它面对的是更高一层的问题：**在吞吐、时延、成本、能效、可靠性、恢复代价和工程复杂度等多个目标同时冲突时，一组方案族的能力边界到底在哪里；哪些变化只是沿边界重新选点，哪些变化真正把边界向外推。**
 
@@ -34,6 +42,19 @@
 如果只追问“最优点在哪里”，训练侧会得到一个更短的 `step time`，推理侧会得到一个满足 `SLA` 的更优吞吐，自动并行会得到一个更好的策略，系统工程则会得到一张局部 benchmark 胜负表。这些结果都有价值，但仍不足以支撑超节点决策。超节点真正关心的，是当比较对象从单个配置变成一组方案族时，**边界为什么在这里、边界是否可信、边界又是否发生了外移。**
 
 围绕这一目标，建模仿真的方法链条也就非常明确，可以收束为六个连续环节：**负载模型、资源模型、系统模型、校准验证、输出接口、共演进闭环**。其中，负载模型定义需求侧压力，资源模型定义供给侧边界，系统模型把两者压缩成多目标空间中的离散候选点，校准验证负责在关键区域收紧误差，输出接口负责把结果沉淀为参考设计比较与未来演进判断可以直接使用的对象，共演进闭环则解释边界为何会随着负载、软件、硬件和运维共同变化而持续移动。换言之，行业真正需要的不是一台孤立的仿真器，而是一套能够持续服务超节点比较的分析能力。
+
+将前述已有工具映射到这六个环节，可以清楚地看到哪些环节已经有坚实基础、哪些环节仍是待填的空白：
+
+| 方法环节 | 已有工具覆盖 | 覆盖程度 | 待补充方向 |
+|:---------|:-----------|:------:|:---------|
+| 负载模型 | `Chakra` 执行跟踪规约；`ASTRA-sim` 计算图描述 | ★★★ | 超节点级多租户混合负载画像；推理侧到达模式与 SLA 分布 |
+| 资源模型 | `Alpa` 成本模型；`ASTRA-sim` 分层网络后端 | ★★☆ | 国产互联拓扑参数库；能效与可靠性维度扩展 |
+| 系统模型 | `ASTRA-sim` 端到端仿真；`Vidur` 推理集群仿真 | ★★☆ | 训练/推理统一的多目标扫描引擎；帕累托前沿自动提取 |
+| 校准验证 | 各工具分散的 validation 流程 | ★☆☆ | 统一校准基线与误差置信区间标准 |
+| 输出接口 | — | ☆☆☆ | 边界地图的标准化表示与版本管理 |
+| 共演进闭环 | — | ☆☆☆ | 负载-软件-硬件联动的边界漂移追踪机制 |
+
+这张表的意义不在于给出工具评级，而在于说明两件事。第一，前三个环节——负载、资源和系统模型——已经有可直接复用的工业级基础，不必从零开始。第二，后三个环节——校准验证、输出接口和共演进闭环——恰恰是把"仿真工具"升级为"持续服务超节点比较的分析能力"所必须补齐的系统性缺口。这也是本章方法论重点着力的方向。
 
 这里也需要特别强调：**评测不是独立主线，而是服务于校准验证。** 真实测量的职责，不是取代整个建模链条，而是在关键点上约束模型误差、说明适用边界，并为后续比较提供置信区间。
 
@@ -96,4 +117,7 @@
 [^alpa]: Lianmin Zheng, Zhuohan Li, et al. "Alpa: Automating Inter- and Intra-Operator Parallelism for Distributed Deep Learning." OSDI 2022. `https://www.usenix.org/conference/osdi22/presentation/zheng-lianmin`
 [^orca]: Gyeong-In Yu, Joo Seong Jeong, Geon-Woo Kim, Sukjoon Lee, and Byung-Gon Chun. "Orca: A Distributed Serving System for Transformer-Based Generative Models." OSDI 2022. `https://www.usenix.org/conference/osdi22/presentation/yu`
 [^sarathi]: Amey Agrawal, Nitin Kedia, Ashish Panwar, et al. "Taming Throughput-Latency Tradeoff in LLM Inference with Sarathi-Serve." OSDI 2024. `https://www.usenix.org/conference/osdi24/presentation/agrawal`
+[^vidur]: Abhishek Vijaya Kumar, Giorgos Ananthanarayanan, et al. "Vidur: A Large-Scale Simulation Framework For LLM Inference." MLSys 2025. `https://arxiv.org/abs/2405.05465`
+[^splitwise]: Pratyush Patel, Esha Choukse, et al. "Splitwise: Efficient Generative LLM Inference Using Phase Splitting." ISCA 2024. `https://arxiv.org/abs/2311.18677`
+[^distserve]: Yinmin Zhong, Shengyu Liu, et al. "DistServe: Disaggregating Prefill and Decoding for Goodput-optimized Large Language Model Serving." OSDI 2024. `https://www.usenix.org/conference/osdi24/presentation/zhong-yinmin`
 [^icpe20-pareto-transfer]: Pavel Valov, Jianmei Guo, and Krzysztof Czarnecki. "Transferring Pareto Frontiers across Heterogeneous Hardware Environments." ICPE 2020. `https://research.spec.org/icpe_proceedings/2020/proceedings/p12.pdf`

@@ -123,7 +123,6 @@ nav:
     - 03-simulation/index.md
     - 负载模型：定义需求侧的压力画像: 03-simulation/2.workload_modeling.md
     - 系统模型：映射与编排的推演引擎: 03-simulation/3.system_simulation.md
-    - 资源模型：供给侧能力边界的参数化表达: 03-simulation/platform.md
     - 校准验证与共演进闭环: 03-simulation/coevolution.md
     - 方法论落地：异构推理架构的帕累托分析: 03-simulation/case-inference.md
   - 参考设计:
