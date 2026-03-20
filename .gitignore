@@ -2,3 +2,4 @@
 encryptcontent.cache
 __pycache__
 site/
+tmp/
