@@ -171,6 +171,8 @@ extra:
       type: institution
     - name: 东南大学
       type: institution
+    - name: 南京大学
+      type: institution
     - name: 清华大学
       type: institution
     - name: 上海电子学会
