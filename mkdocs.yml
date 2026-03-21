@@ -103,15 +103,15 @@ nav:
       - NVIDIA 超节点: 01-architecture/01-nvidia.md
       - 华为超节点: 01-architecture/02-huawei.md
     - 技术基础:
-      - 电气接口与物理层: 01-architecture/03-electrical.md
-      - 互联协议与内存语义: 01-architecture/04-protocols.md
-      - 互联拓扑与扩展权衡: 01-architecture/05-topology.md
+      - 物理层与电气接口: 01-architecture/03-electrical.md
+      - 链路层与事务协议: 01-architecture/04-protocols.md
+      - 拓扑与组网: 01-architecture/05-topology.md
     - 系统实现:
-      - 统一访存与系统架构: 01-architecture/06-system-architecture.md
-      - 整机工程与交付形态: 01-architecture/07-server-architecture.md
+      - 系统架构: 01-architecture/06-system-architecture.md
+      - 整机工程: 01-architecture/07-server-architecture.md
   - 软件系统:
     - 本章导读: 02-software/index.md
-    - 统一内存子系统:
+    - 统一访存:
       - 通用语义框架：内存语义、保序与地址翻译: 02-software/hw-memory-foundations.md
       - 实现剖面：NVIDIA 统一寻址与跨节点访问: 02-software/memory-semantics.md
       - 内存池化：从可访问到高效调度: 02-software/memory-pooling.md
