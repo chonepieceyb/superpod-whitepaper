@@ -1,6 +1,6 @@
 # 通信库的架构与设计
 
-前三节已经说明，统一内存子系统要解决的不是“能不能访问远端显存”，而是“能否以可接受的一致性代价、地址复杂度和调度开销，把跨设备内存稳定兑现为 Goodput”。但当远端资源在语义上变得“可访问”之后，新的问题随之出现：这些语义能力如何被组织成适合真实训练与推理系统使用的通信路径？
+前三节已经说明，统一访存要解决的不是“能不能访问远端显存”，而是“能否以可接受的一致性代价、地址复杂度和调度开销，把跨设备内存稳定兑现为 Goodput”。但当远端资源在语义上变得“可访问”之后，新的问题随之出现：这些语义能力如何被组织成适合真实训练与推理系统使用的通信路径？
 
 本节讨论的正是这一层。**硬件互联再强，如果通信库不能把这些能力组织成稳定、可组合、可调度的通信语义，超节点的带宽和低时延也很难真正兑现为 Goodput。** 对软件层来说，通信库不是简单的“调用几种 collective”；它实际上承担着把内存语义、硬件拓扑、并行策略、拥塞状态和同步关系进一步组织为稳定吞吐的职责。
 
@@ -343,12 +343,6 @@ PGAS/SHMEM/单边通信在超节点中的核心价值不是替代集合通信，
 1. 把 one-sided 与 collectives 统一到同一运行时资源模型（如 UCC 的 one-sided collectives / 资源抽象）[^9]。
 2. 把通信-计算联合优化进一步推向编译器 / DSL（如 Triton-distributed）。
 3. 在 Scale-Out 侧引入更强的硬件 offload 与 multicast（如 SHARP 及相关方向）。
-
-## 待补充
-
-- [ ] 将当前脚注补全为完整书目信息。
-- [ ] 将尚未完整保留的公式部分，补为可渲染的 LaTeX / MathJax。
-- [ ] 视排版效果进一步精简或分拆图片密度。
 
 [^1]: [NVIDIA NVLink SGXLS10 Switch Systems User Manual.](https://docs.nvidia.com/networking/display/sgxh100/introduction)
 [^3]: Xu, E. (2025) [Groundbreaking SuperPoD Interconnect: Leading a New Paradigm for AI Infrastructure.](https://www.huawei.com/en/news/2025/9/hc-xu-keynote-speech)
