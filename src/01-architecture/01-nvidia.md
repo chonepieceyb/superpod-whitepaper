@@ -32,6 +32,99 @@
 | **IB 带宽** | 32 x 400 Gb/s | 256 x 400 Gb/s | 72 x 800 Gb/s | 576 x 800 Gb/s |
 | **GPUs Power** | 32 x 1 kW = 32 kW | 256 x 1 kW = 256 kW | 36 x 2.7 kW = 97.2 kW | Not provided |
 
+下面按代际梳理 DGX-1、DGX-2、DGX A100、DGX H100、GB200 NVL72/NVL576，以及 Rubin NVL72/NVL576/NVL1152 的互连结构：
+
+### 代际总览
+
+![NVLink-enabled server generations](imgs/NVLink-enabled server generations.png)
+
+<p align="center"><em>图1 NVLink-enabled server generations</em></p>
+
+从 DGX-1 到 DGX H100，NVIDIA 的互连演进主线可以概括为：直连 NVLink → 节点内 NVSwitch → 机架级 NVLink 域。前四代系统仍以单节点为主要互连边界；到了 GB200 与 Rubin 时代，NVLink / NVSwitch 已从单服务器内部互连扩展为整机架，乃至跨机架的统一互连域。
+
+### DGX-1：P100 / V100 时代的 hybrid cube-mesh
+
+DGX-1 有 P100 与 V100 两个主要版本。两者都不是 NVSwitch 结构，而是 8-GPU 的 hybrid cube-mesh 直连 NVLink 拓扑。P100 使用第一代 NVLink，每张卡 4 条 NVLink；V100 使用第二代 NVLink，每张卡 6 条 NVLink。因此，DGX-1 两代的拓扑家族一致，但带宽与连接能力逐步增强。
+
+![图2](imgs/DGX-1 P100 的 hybrid cube-mesh 示意.png)
+
+<p align="center"><em>图 2  DGX-1 P100 的 hybrid cube-mesh 示意</em></p>
+
+![图3](imgs/DGX-1 V100 的连接示意.png)
+
+<p align="center"><em>图 3  DGX-1 V100 的连接示意</em></p>
+
+### DGX-2：进入 NVSwitch 时代
+
+DGX-2 是 NVIDIA 首次在 DGX 产品中引入 NVSwitch 的一代。系统包含 16 张 V100，并通过 NVSwitch 构成统一的 16-GPU 高带宽互连结构。与 DGX-1 相比，DGX-2 的关键变化不是 GPU 数量单纯翻倍，而是通过交换式互连把 16 张 GPU 组织成了更接近单一加速池的节点内系统。
+
+![图4](imgs/DGX-2 的 16-GPU NVSwitch 结构示意.png)
+
+<p align="center"><em>图 4   DGX-2 的 16-GPU NVSwitch 结构示意</em></p>
+
+### DGX A100：8-GPU 节点内全互连的标准形态
+
+DGX A100 基于 Ampere 架构的 A100 GPU。每张 A100 具有 12 条第三代 NVLink，节点内通过 6 个 NVSwitch 形成 8-GPU 全连接结构。一个实用的记法是：每张 GPU 以每个 NVSwitch 2 条链路的方式接入全部 6 个 NVSwitch，因此单卡 GPU-GPU 总带宽达到 600 GB/s。
+
+![图5](imgs/DGX A100 的节点内互连示意.png)
+
+<p align="center"><em>图 5  DGX A100 的节点内互连示意</em></p>
+
+### DGX H100：节点内 8 GPU + 4 NVSwitch，并支持进一步扩展
+
+DGX H100 采用 Hopper 架构。其单节点内部由 8 张 H100 GPU 和 4 个第三代 NVSwitch 组成，单卡 GPU-GPU 总带宽达到 900 GB/s。每张 H100 配备 18 条 NVLink，并按 5、4、4、5 的链路分配方式接入 4 个 NVSwitch，在节点内形成全互连高带宽通信结构。此外，4 个 NVSwitch 还分别保留 20、16、16、20 个 NVLink ports，可用于向更大规模的 NVLink 网络进一步扩展。
+
+![图6](imgs/DGX_H100_NVLink.png)
+
+<p align="center"><em>图 6  DGX H100 / NVLink Network 相关结构示意</em></p>
+
+### GB200 NVL72 / 扩展到 576 GPU：从单节点 NVSwitch 走向机架级 NVLink 域
+
+GB200 NVL72 标志着 NVIDIA 互连结构从“单服务器内部”进一步扩展到“整机架一级域”。这里需要区分四个层级：B200 是单个 Blackwell GPU；GB200 Superchip 由 1 个 Grace CPU 和 2 个 B200 GPU 组成；DGX GB200 compute tray 由 2 个 GB200 Superchip 组成，因此一个 compute tray 含 2 个 Grace CPU 和 4 个 B200 GPU；整个 NVL72 机架则由 18 个 compute trays 组成，总计 72 个 GPU。
+
+在交换平面一侧，NVL72 机架包含 9 个 NVLink switch trays，每个 switch tray 含 2 个 NVLink switch chips，因此整机架共有 18 个 switch chips。每个 B200 GPU 具有 18 条 NVL5 links，并采用“每个 GPU 对每个 switch chip 1 条链路”的连接方式。换言之，单个 GPU 会连接机架中的全部 18 个 switch chips；相应地，单个 switch chip 会连接整机架全部 72 个 GPU，各 1 条链路。
+
+![图7](imgs/GB200 NVL72 连接结构示意.png)
+
+<p align="center"><em>图 7  GB200 NVL72 连接结构示意</em></p>
+
+![图8](imgs/GB200 NVL72 连接结构示意（补充图）.png)
+
+<p align="center"><em>图 8  GB200 NVL72 连接结构示意（补充图）</em></p>
+
+在此基础上，基于第五代 NVLink，GB200 平台还具备继续扩展到最多 576 GPUs 单一 NVLink 域的能力。下图展示的 Polyphene prototype 由 8 个 GB200 NVL72 机架组成，可用于说明 Blackwell / GB200 平台向 576-GPU 规模扩展的代表性结构。
+
+![图9](imgs/基于 GB200 的 NVL576 Polyphene prototype 连接结构示意.png)
+
+<p align="center"><em>图 9  基于 GB200 的 NVL576 Polyphene prototype 连接结构示意</em></p>
+
+### Rubin NVL72 / NVL576 / NVL1152：NVLink 6 继续扩展
+
+当互连演进到 NVLink 6.0 时，Vera Rubin 进一步提升了机架级统一互连能力。公开资料显示，Vera Rubin NVL72 由 36 个 NVLink 6 switches 组成机架级 all-to-all 互连结构。与 GB200 NVL72 相比，Rubin NVL72 的 scale-up 带宽和机架级统一性进一步增强。
+
+![图10](imgs/Vera Rubin NVL72 NVLink all-to-all topology.png)
+
+<p align="center"><em>图 10  Vera Rubin NVL72 NVLink all-to-all topology</em></p>
+
+在此基础上，Rubin 平台还可以进一步构建更大规模的 NVLink 域。公开资料显示，Rubin Ultra NVL576 采用 two-layer all-to-all NVLink topology。为了继续扩大单域规模，NVIDIA 还提出了新的 MGX rack——Kyber，用于承载更大规模的 Vera Rubin Ultra scale-up 结构。根据公开资料，Kyber 首先对应 Vera Rubin Ultra 的 NVL144 形态，并进一步支持 NVL72、NVL144、NVL576 等多种 Vera Rubin Ultra scale-up domain 选项；在此基础上，还可继续扩展到 NVL1152。
+
+![图11](imgs/NVIDIA Kyber NVL1152 结构示意.png)
+
+<p align="center"><em>图 11  NVIDIA Kyber NVL1152 结构示意</em></p>
+
+### 总结
+
+| **阶段**                                     | **典型系统**                      | **说明**                                                     |
+| -------------------------------------------- | --------------------------------- | ------------------------------------------------------------ |
+| 直连 NVLink   （NVLink 1.0 / 2.0）           | DGX-1 P100 / V100                 | 拓扑为 hybrid cube-mesh；P100 与 V100 的差别主要体现在  NVLink 代际和每卡链路数。 |
+| 节点内 NVSwitch   （NVLink 2.0 / 3.0 / 4.0） | DGX-2、DGX A100、DGX H100         | 节点内 GPU 通过 NVSwitch 形成统一的高带宽互连结构。          |
+| 机架级 NVLink 域   （NVLink 5.0）            | GB200 NVL72                       | 72 GPU 与 18 个 switch chips 组成单一 NVLink 域。            |
+| 更大规模 NVLink 域   （NVLink 5.0）          | GB200 扩展到最多 576 GPUs         | 基于第五代 NVLink，可继续扩展为更大规模的单一 NVLink 域。    |
+| 机架级 NVLink 域   （NVLink 6.0）            | Vera Rubin NVL72                  | 72 GPU 与 36 个 NVLink 6 switches 组成机架级  all-to-all 互连结构。 |
+| 更大规模 NVLink 域   （NVLink 6.0）          | Rubin Ultra NVL576、Kyber NVL1152 | 通过 two-layer 或更大规模的 NVLink 结构，把单机架 NVLink  域继续扩展到更高规模的统一 scale-up 域。 |
+
+从 DGX-1 到 DGX H100，互连演进主线是“直连 NVLink → 节点内 NVSwitch”；而到了 GB200 NVL72，NVLink / NVSwitch 已从单服务器内部互连扩展为机架级 72-GPU 的统一互连域。继续向上，GB200 扩展到 576 GPU、Rubin NVL576 以及 Kyber NVL1152，则代表 NVIDIA 正在把这种统一互连域从机架级推进到更大规模的多机架 scale-up 结构。
+
 ## 增长机制
 
 回顾从 Volta 到 Rubin 系列的演进，可以把 NVIDIA 的系统级复合增长拆成几组清晰的增长引擎：
