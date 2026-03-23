@@ -50,11 +50,11 @@ plugins:
         - zh
         - en
       separator: '[\s\-\.]+'
-  - encryptcontent:
-      global_password: 'superpod2026'
-      reload_scripts:
-        - javascripts/charts.js
-      title_prefix: '🔒'
+  # - encryptcontent:
+  #     global_password: 'superpod2026'
+  #     reload_scripts:
+  #       - javascripts/charts.js
+  #     title_prefix: '🔒'
   - excalidraw
   - heti
 
